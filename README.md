@@ -16,6 +16,6 @@ The scripts under `t5/` simply replicate the behavior of the BART code from the 
 python3 t5/cli_t5.py \
 --do_predict \
 --model_name 'allenai/unifiedqa-t5-small' \
---output_dir prediction
+--output_dir prediction \
 --predict_batch_size 8
 ```
