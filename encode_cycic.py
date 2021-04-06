@@ -56,14 +56,14 @@ class CycicEncoder():
     def encode_data_dir(self, split):
         questions_file = answers_file = ""
         if split == "train":
-            questions_file = self.get_filename("training_questions.jsonl")
-            answers_file = self.get_filename("training_labels.jsonl")
+            questions_file = self.get_filename("training*questions.jsonl")
+            answers_file = self.get_filename("training*labels.jsonl")
         elif split == "test":
-            questions_file = self.get_filename("test_questions.jsonl")
-            answers_file = self.get_filename("test_labels.jsonl")
+            questions_file = self.get_filename("test*questions.jsonl")
+            answers_file = self.get_filename("test*labels.jsonl")
         elif split == "dev":
-            questions_file = self.get_filename("dev_questions.jsonl")
-            answers_file = self.get_filename("dev_labels.jsonl")
+            questions_file = self.get_filename("dev*questions.jsonl")
+            answers_file = self.get_filename("dev*labels.jsonl")
         else:
             raise Exception("Unknown split: {}".format(split))
         questions = self._read_json(questions_file)
@@ -75,7 +75,7 @@ def main():
     parser = argparse.ArgumentParser(description='Encode a CycIC dataset into the UnifiedQA format.')
     parser.add_argument('--data_dir', type=str, dest='data_dir', required=True, help="The directory to read the CycIC data from")
     parser.add_argument('--output_dir', type=str, dest='output_dir', required=True, help="The directory to write the encoded output to.")
-    parser.add_argument('--split', type=str, dest='split', required=False, default='all')
+    parser.add_argument('--split', type=str, dest='split', required=False, default='all', help="Which subset of the data to work on: 'train', 'test', 'dev', or 'all.'")
     args = parser.parse_args()
     encoder = CycicEncoder(args.data_dir, args.output_dir)
     if args.split == 'all':
