@@ -87,6 +87,8 @@ def main():
                         help="Use a subset of data for debugging")
     parser.add_argument('--seed', type=int, default=42,
                         help="random seed for initialization")
+    parser.add_argument('--tpu_num_cores', type=int, default=1,
+                        help="Optional number of tpu cores")
     args = parser.parse_args()
     if os.path.exists(args.output_dir) and os.listdir(args.output_dir):
         print("Output directory () already exists and is not empty.")
