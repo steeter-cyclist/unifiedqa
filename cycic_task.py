@@ -10,7 +10,7 @@ import tensorflow_datasets as tfds
 
 DATA_DIR = f"gs://cycic3/encoded/"
 
-datasets = ["cycic3_a"]
+DATASETS = ["cycic3_a"]
 
 def dataset_preprocessor(ds):
     def normalize_text(text):
@@ -67,7 +67,7 @@ def load_cycic():
             # Supply a function which preprocesses text from the tf.data.Dataset.
             text_preprocessor=[dataset_preprocessor],
             # Use the same vocabulary that we used for pre-training.
-            sentencepiece_model_path=t5.data.DEFAULT_SPM_PATH,
+            # sentencepiece_model_path=t5.data.DEFAULT_SPM_PATH,
             # Lowercase targets before computing metrics.
             postprocess_fn=t5.data.postprocessors.lower_text,
             metric_fns=[t5.evaluation.metrics.accuracy],
@@ -76,3 +76,35 @@ def load_cycic():
         t5.data.MixtureRegistry.add(
             f"{dataset}_mixture", [f"{dataset}_task"], default_rate=1.0
         )
+
+load_cycic()
+
+TPU_JOB_NAME = "tpu_worker"
+TPU = "pytorch-tpu"
+TPU_TOPOLOGY = "v3-8"
+GCP_PROJECT = "total-scion-310118"
+TPU_ZONE = "us-central1-a"
+MODEL_PARALLELISM = 8,
+MODEL_DIR = "gs://unifiedqa/models/11B"
+
+# todo: just use the Google-provided mesh_transformer script like they do in the example
+# use the module_import flag to import cycic_task which can load the new task
+# then use the mixture_or_task flag to activate the cycic task
+
+# note: to make the module import work, run conda develop on the unifiedqa directory, thereby
+# adding the files to the search path
+
+def run_cycic():
+    model = mtf_model.MtfModel(
+            tpu_job_name=FLAGS.tpu_job_name,
+            tpu=FLAGS.tpu,
+            gcp_project=FLAGS.gcp_project,
+            tpu_zone=FLAGS.tpu_zone,
+            tpu_topology=FLAGS.tpu_topology,
+            model_parallelism=FLAGS.model_parallelism,
+            model_dir=FLAGS.model_dir,
+            batch_size=FLAGS.batch_size,
+            sequence_length={"inputs": FLAGS.input_sequence_length,
+                "targets": FLAGS.target_sequence_length}
+            )
+
